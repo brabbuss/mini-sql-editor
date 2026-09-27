@@ -1,0 +1,10 @@
+{
+  // For tsx, which runs the tests: it only applies a tsconfig's options to files the tsconfig includes, and the
+  // client's component tests (.test.tsx) need JSX compiled for React's automatic runtime. Type-checking uses the
+  // other tsconfigs (npm run typecheck)
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  },
+  "include": ["server/**/*", "shared/**/*", "client/src/**/*"]
+}

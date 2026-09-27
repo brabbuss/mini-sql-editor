@@ -1,0 +1,103 @@
+# The API, runnable with the REST Client extension for VS Code (humao.rest-client): "Send Request" above each block.
+# Everything runs as a "run": a script of one or more statements, started on the server and followed by polling.
+# `# @name` labels a request, so later ones can use its response, e.g. {{select.response.body.$.id}}.
+
+### Run a query: answers 202 with the run's id; the query keeps running on the server
+# @name select
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "SELECT 1"
+}
+
+### Follow it: send again until "status" isn't "running". Rows are in statements[].rows, with statements[].columns
+GET http://localhost:8080/api/runs/{{select.response.body.$.id}}
+
+### All tables
+# @name tables
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "SELECT * from system.tables;"
+}
+
+###
+GET http://localhost:8080/api/runs/{{tables.response.body.$.id}}
+
+### A script: statements run in order in one ClickHouse session (so USE and temporary tables carry over), and
+# stop at the first error; each statement gets its own result
+# @name script
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "CREATE TEMPORARY TABLE demo (n UInt8);\nINSERT INTO demo VALUES (1), (2);\nSELECT n, n * 10 AS tens FROM demo"
+}
+
+###
+GET http://localhost:8080/api/runs/{{script.response.body.$.id}}
+
+### A slow query (~10 s)...
+# @name slow
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "SELECT sum(sleepEachRow(0.5)) FROM numbers(20) SETTINGS max_block_size = 1"
+}
+
+### ...cancelled: the running statement is killed in ClickHouse; poll the run to see it marked cancelled
+POST http://localhost:8080/api/runs/{{slow.response.body.$.id}}/cancel
+
+### Statements that delete or overwrite data: 409 listing them, and nothing runs...
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "CREATE TABLE IF NOT EXISTS default.requests_demo (n UInt8) ENGINE = Memory;\nDROP TABLE default.requests_demo"
+}
+
+### ...until confirmed
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "CREATE TABLE IF NOT EXISTS default.requests_demo (n UInt8) ENGINE = Memory;\nDROP TABLE default.requests_demo",
+    "confirmDestructive": true
+}
+
+### As a specific ClickHouse user (without the header: `default`). For a user with a password, add
+# X-ClickHouse-Key: <password>. Poll with the same headers: a run belongs to the credentials that started it
+# @name asUser
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+X-ClickHouse-User: default
+
+{
+    "sql": "SELECT currentUser() AS user"
+}
+
+###
+GET http://localhost:8080/api/runs/{{asUser.response.body.$.id}}
+X-ClickHouse-User: default
+
+### Insert a file into a table: first a table to insert into (a run, like any other SQL)
+POST http://localhost:8080/api/runs
+Content-Type: application/json
+
+{
+    "sql": "CREATE TABLE IF NOT EXISTS default.events (time DateTime, host String, status UInt16, duration_ms Float64) ENGINE = MergeTree ORDER BY time"
+}
+
+### Then the file, as the request body: streamed into INSERT INTO default.events FORMAT CSVWithNames. Formats:
+# CSVWithNames, TabSeparatedWithNames, JSONEachRow, Parquet. Answers with the rows written, or ClickHouse's error
+# with the row it failed at
+POST http://localhost:8080/api/insert?database=default&table=events&format=CSVWithNames
+Content-Type: application/octet-stream
+
+< ../samples/events.csv
+
+### The tables a file can go into, as this ClickHouse user sees them
+GET http://localhost:8080/api/tables

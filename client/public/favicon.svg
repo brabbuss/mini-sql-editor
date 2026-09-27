@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!-- Lines of code, in the colours of clickhouse.com's own tab icon (#161616 and #FCFF74) -->
+  <rect width="16" height="16" rx="3" fill="#161616" />
+  <path d="M4 5h8M4 8h8M4 11h5" stroke="#FCFF74" stroke-width="1.5" stroke-linecap="round" />
+</svg>

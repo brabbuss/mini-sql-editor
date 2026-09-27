@@ -1,0 +1,5 @@
+{
+  // Two projects: the shared code (tsconfig.lib.json) and its tests (tsconfig.test.json). Editors pick the right one per file.
+  "files": [],
+  "references": [{ "path": "./tsconfig.lib.json" }, { "path": "./tsconfig.test.json" }]
+}

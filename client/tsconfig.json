@@ -1,0 +1,5 @@
+{
+  // Two projects: browser code (tsconfig.app.json) and its tests (tsconfig.test.json). Editors pick the right one per file.
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.test.json" }]
+}

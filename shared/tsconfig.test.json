@@ -1,0 +1,10 @@
+{
+  // The tests run in Node (node:test), so they get Node's types; the shared code itself doesn't
+  "extends": "./tsconfig.lib.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.shared-test.tsbuildinfo"
+  },
+  "include": ["*.test.ts"],
+  "exclude": []
+}

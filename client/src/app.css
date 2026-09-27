@@ -1,0 +1,282 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* click-ui's text style for the page: it styles only its own components, so anything else fell back to the browser's
+   default serif. That includes the hidden span Recharts measures axis labels in, so labels measured in Times but
+   drawn in Inter came out ~20% wider than measured and overlapped */
+body {
+  font: var(--typography-styles-product-text-normal-md);
+}
+
+/*
+ * Colours, spacing and fonts come from click-ui's design tokens (CSS variables set by ClickUIProvider),
+ * so the editor matches the component library and would follow a theme change.
+ */
+
+/* Editor on top, results filling the rest of the window */
+.app {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--click-container-gap-sm);
+  height: 100%;
+  padding: var(--click-container-space-md) var(--click-container-space-lg);
+}
+
+.app__editor {
+  border: var(--click-codeblock-stroke) solid var(--click-global-color-stroke-default);
+  border-radius: var(--click-codeblock-radii-all);
+  flex: 0 0 35%;
+  min-height: 120px;
+  overflow: hidden;
+}
+
+/* The editor fills its frame (so a click anywhere in it focuses the editor), and long scripts scroll inside it */
+.app__editor > div {
+  height: 100%;
+}
+
+/* The frame shows focus instead of CodeMirror's dotted outline */
+.app__editor:focus-within {
+  border-color: var(--click-global-color-stroke-intense);
+}
+
+.app__editor .cm-editor.cm-focused {
+  outline: none;
+}
+
+/* click-ui's code font (it names Inconsolata but doesn't load it, so the fallbacks usually apply) */
+.app__editor .cm-scroller {
+  font: var(--click-codeblock-typography-text-default);
+}
+
+.app__toolbar {
+  align-items: center;
+  display: flex;
+  gap: var(--click-container-gap-sm);
+}
+
+/* Actions that aren't about the query in the editor, at the far right */
+.app__toolbar-end {
+  margin-left: auto;
+}
+
+/* min-height: 0 lets this flex child shrink, so the grid scrolls inside it instead of growing the page */
+.app__results {
+  flex: 1;
+  min-height: 0;
+}
+
+/* The statement that failed: the same light red as the error alert below */
+.app__editor .cm-error-statement {
+  background: var(--click-alert-color-background-danger);
+}
+
+/* Exactly where: the token a syntax error points at, or where an unterminated string starts */
+.app__editor .cm-error-token {
+  text-decoration: underline wavy var(--click-global-color-text-danger);
+  text-decoration-skip-ink: none;
+}
+
+/* Notices above, then the statement's result filling the rest */
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--click-container-gap-sm);
+  height: 100%;
+}
+
+.results__tabs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.results__tab-label {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--click-container-gap-xs);
+}
+
+.results__tab-content {
+  flex: 1;
+  min-height: 0;
+  padding-top: var(--click-container-space-sm);
+}
+
+.results__error-summary {
+  display: block;
+  word-break: break-word;
+}
+
+.results__error-details pre {
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+/* Row count and notices, then the grid taking the remaining height */
+.statement-output {
+  display: flex;
+  flex-direction: column;
+  gap: var(--click-container-gap-sm);
+  height: 100%;
+}
+
+.statement-output .results-grid {
+  flex: 1;
+  min-height: 0;
+}
+
+.confirm-destructive ul {
+  margin: var(--click-container-space-sm) 0 0;
+  padding-left: var(--click-container-space-lg);
+}
+
+.confirm-destructive code {
+  font: var(--click-codeblock-typography-text-default);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* The Grid sizes itself to its parent */
+.results-grid {
+  height: 100%;
+}
+
+.results-grid__type {
+  color: var(--click-global-color-text-muted);
+  font-weight: normal;
+}
+
+.results-grid__null {
+  color: var(--click-global-color-text-muted);
+  font-style: italic;
+}
+
+/* Row count on the left, Table / Chart on the right */
+.statement-output__header {
+  align-items: center;
+  display: flex;
+  gap: var(--click-container-gap-sm);
+  justify-content: space-between;
+}
+
+/* Controls in one row above the plot, which takes the remaining height. The grid's text style, so the chart's labels
+   match the table's */
+.results-chart {
+  display: flex;
+  font: var(--click-table-cell-text-default);
+  flex: 1;
+  flex-direction: column;
+  gap: var(--click-container-gap-sm);
+  min-height: 0;
+}
+
+.results-chart__controls {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--click-container-gap-md);
+}
+
+.results-chart__x {
+  min-width: 200px;
+}
+
+.results-chart__y {
+  border: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+/* Styled like click-ui's own field labels, e.g. "X axis" beside it */
+.results-chart__y legend {
+  color: var(--click-field-color-label-default);
+  font: var(--click-field-typography-label-default);
+  margin-bottom: var(--click-container-gap-xs);
+  padding: 0;
+}
+
+.results-chart__series-list {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--click-container-gap-sm) var(--click-container-gap-md);
+  min-height: 32px;
+}
+
+.results-chart__series {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--click-container-gap-xs);
+}
+
+/* The series' color beside its checkbox; empty while the column isn't drawn */
+.results-chart__swatch {
+  border: 1px solid var(--click-global-color-stroke-default);
+  border-radius: 2px;
+  height: 10px;
+  width: 10px;
+}
+
+.results-chart__plot {
+  flex: 1;
+  min-height: 200px;
+}
+
+/* Legend text in text ink, not the series color: the marker beside it carries the identity */
+.results-chart__legend-text {
+  color: var(--click-global-color-text-default);
+}
+
+/* Insert a file: table, file, format, outcome, then the action */
+.insert-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--click-container-gap-md);
+  min-width: min(520px, 80vw);
+}
+
+.insert-dialog__file {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--click-container-gap-sm);
+}
+
+/* Opened by the "Choose file" button instead */
+.insert-dialog__file-input {
+  display: none;
+}
+
+.insert-dialog__muted {
+  color: var(--click-global-color-text-muted);
+}
+
+.insert-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.insert-dialog code {
+  font: var(--click-codeblock-typography-text-default);
+  word-break: break-word;
+}
+
+/* "Try again" inside an alert's text: a link-styled button */
+.insert-dialog__link {
+  background: none;
+  border: none;
+  color: var(--click-global-color-text-link-default);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}

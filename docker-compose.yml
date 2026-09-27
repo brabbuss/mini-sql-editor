@@ -1,0 +1,30 @@
+services:
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.6
+    container_name: clickhouse-demo-db
+    hostname: clickhouse
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - CLICKHOUSE_INIT_TIMEOUT=10000
+    ports:
+      - '8123:8123'
+      - '9000:9000'
+      - '9363:9363'
+      - '1443:1443'
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_data:/var/log/clickhouse-server/
+      - ./docker/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./docker/users.xml:/etc/clickhouse-server/users.d/users.xml
+    networks:
+      - clickhouse-demo
+
+volumes:
+  clickhouse_data:
+    driver: local
+
+networks:
+  clickhouse-demo:
+    driver: bridge

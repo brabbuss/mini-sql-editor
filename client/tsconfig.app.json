@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    // Only written by `tsc -b`; kept out of the repo
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "isolatedModules": true,
+    // Browser code: only Vite's types (e.g. for importing './app.css'), so Node globals like `process` are errors.
+    // Listed explicitly because TypeScript 6+ no longer loads every installed @types package.
+    "types": ["vite/client"],
+    // Some dependencies ship type definitions that don't compile: click-ui's Grid types need
+    // react-window types it doesn't install, and react-sortablejs (via click-ui) targets React 18.
+    // Our own code is still fully checked.
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/testSetup.ts"]
+}
