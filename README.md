@@ -27,6 +27,22 @@ Then try the files in [`samples/`](samples/):
 
 [`server/requests.http`](server/requests.http) walks through the API. Tests: `npm test` (needs ClickHouse), or `npm run test:unit` without Docker.
 
+## Scope and how I built it
+
+This project was a challenge for myself - decide what and how to build a mini SQL editor with a two day time constraint.
+Requirements:
+- be able to run a single query or a script
+- be able to insert from file
+- scaffold user profiles
+- persist a run outside of the browser
+
+I worked with Claude Code. I could have written a smaller version of this by hand, but I'd rather show how I've found myself actually
+working in the past year+ as AI has become an increasingly ubiquitous tool in software. AI made the basics quick to get working, so my
+time went where it doesn't reliably help by itself: deciding what a mini SQL editor should do, testing what it told me about ClickHouse
+against a real server (several confident answers were wrong), spotting holes, and reviewing, questioning and reworking each change until
+I could defend it. The parts beyond the basics (cancellation, surviving a reload, file insert, errors that say whose fault they are) are
+what make this SQL editor a extensible working product rather than a demo.
+
 ## What it does
 
 - **Queries and scripts.** One statement shows its result; a script gets a tab per statement, with its status. A
@@ -192,15 +208,6 @@ built-in runner with supertest, and React Testing Library on jsdom.
 - **Create a table from a file**, using ClickHouse's schema inference.
 - **Several server instances**: runs in a shared store such as Redis, and cancel by query id from any instance.
 - **Friendlier wording for common ClickHouse errors** (memory limit, too many simultaneous queries).
-
-## How I built it
-
-With Claude Code throughout. I could have written a smaller version of this by hand, but I'd rather show how I actually
-work. AI made the basics quick to get working, so my time went where it doesn't reliably help by itself: deciding what
-a mini SQL editor should do, testing what it told me about ClickHouse against a real server (several confident answers
-were wrong), spotting holes, and reviewing, questioning and reworking each change until I could defend it. The parts
-beyond the basics (cancellation, surviving a reload, file insert, errors that say whose fault they are) are what make
-this SQL editor a working product rather than a demo.
 
 ## License
 
