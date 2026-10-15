@@ -29,12 +29,9 @@ Then try the files in [`samples/`](samples/):
 
 ## Scope and how I built it
 
-This project was a challenge for myself - decide what and how to build a mini SQL editor with a two day time constraint.
-Requirements:
-- be able to run a single query or a script
-- be able to insert from file
-- scaffold user profiles
-- persist a run outside of the browser
+I set myself a challenge: decide what a mini SQL editor should do and build it in two days.
+Requirements I fixed up front: run a single query or a script, insert from a file,
+persist a run outside the browser, scaffold user profiles.
 
 I worked with Claude Code. I could have written a smaller version of this by hand, but I'd rather show how I've found myself actually
 working in the past year+ as AI has become an increasingly ubiquitous tool in software. AI made the basics quick to get working, so my
